@@ -7,24 +7,24 @@ library(UniProt.ws)
 # Tiles have a specifiable length and overlap between each.
 # Uses a modified FASTA of the disorder score of the human proteome to exclude tiles which are too ordered.
 # Requires for input (see variables below).
-#   1. Codon table as a csv; correlate amino acid with codon. 
-#   2. TSV of aiupred-scored human proteome; each amino acid is replaced with a number from 0 (ordered) to 9 (disordered).
-#
+#   1. Codon table as a csv; correlate amino acid with codon. E.coli version (IE, for M13 phage display) is included in codon_tables folder.
+#   2. TSV of aiupred-scored human proteome; each amino acid is replaced with a number from 0 (ordered) to 9 (disordered). Human proteome is included in human_proteome folder.
+# Since our phage vector contains a HindIII site to remove background, removal of this site is important for 
 
 # Codon table for reverse translation.
-codon_table<-read.csv('/home/weisslab/Documents/scriptcore/codon_tables/e_coli.csv')
+codon_table<-read.csv('YOUR_WORKING_DIRECTORY_HERE/codon_tables/e_coli.csv')
 
 # AIpred scored human proteome
-aipred_raw<-read.csv('/home/weisslab/Documents/scriptcore/human_proteome/hprot_aiupred.tsv',sep='\t',header=FALSE,colClasses="character")
+aipred_raw<-read.csv('YOUR_WORKING_DIRECTORY_HERE/human_proteome/hprot_aiupred.tsv',sep='\t',header=FALSE,colClasses="character")
 
 # Set working directory
-setwd('/home/weisslab/Documents/Ben/Notebook/240821-tile_phage')
+setwd('YOUR_WORKING_DIRECTORY_HERE')
 
 # Tile length in aa
-tile_size=24
+tile_size=24 #Sample
 
 #Tile overlap in aa
-tile_overlap=12
+tile_overlap=12 #Sample
 
 # AIupredcutoff
 aiupred_cutoff=0.4
@@ -35,26 +35,10 @@ rsite_to_remove='AAGCTT' #HindIII for now
 rsite_replace0='AAACTG'
 rsite_replace1='ATCTTT'
 rsite_replace2='AAGCCT'
-# CUSTOM GOTERM FILTER (based on Eric discussion, 10.5.23)
+
+# GOTERMS TO USE
 ndr_goterms=c(
-  # "GO:0032465 AND organism_id:9606"#, # regulate cytokinesis
-  # "(GO:0032465 OR GO:0035329) AND organism_id:9606"# # regulation cytokinesis and hippo pathway
- # "(GO:0000910 OR GO:0035329) AND organism_id:9606"#, # cytokinesis and hippo pathway
-  # "GO:0000902 AND organism_id:9606"#, # cell morphogenesis
-  # GO:0006893  AND organism_id:9606" # Section+golgi to PM *****************
-   # "GO:0046903 AND organism_id:9606" # Section 8575 phage
-  # "GO:0005856 AND organism_id:9606" # Cytoskeleton
-  # "GO:0003924  AND organism_id:9606"  # GTPase activity #ERIC WANTS THIS!!!!!!!!!
-  # " GO:0051020  AND organism_id:9606"  # GTPase binding 
-  
-  # cytokinesis and hippo pathway #nd GTPase activity 
-   "(GO:0000910 OR GO:0035329 OR GO:0003924 ) AND organism_id:9606" #5394 phage
-  
- # " GO:0007010  AND organism_id:9606"  # Cytoskeletal organization #ERIC WANTS THIS!!!!!!!!!
- # " GO:0008092  AND organism_id:9606"  # Cytoskeleton protein binding 
- 
-  # "(GO:0030011 OR GO:0030010) AND organism_id:9606" #maintenance and establishment of cell polarity
-  
+   "(GO:0000910 OR GO:0035329 OR GO:0003924 ) AND organism_id:9606" # Example
 )
 ###########################################################################################################3
 #AAGCCT
@@ -68,21 +52,6 @@ hprot_raw<-read.csv('/home/weisslab/Documents/scriptcore/human_proteome/hprot.ts
 names(hprot_raw) <-c("accession","sequence")
 
 
-#ndr_goterms=c("GO:0032465 AND organism_id:9606")
-
-# Secretion GO:0046903
-# Hippo 
-# Cytoskeleton GO:0005856
-# Combine STK38 interactors and Mob2 interactors
-
-# Determine sequences/uniprot ids in 4x chunks
-# Note limit of 100k entries per query
-# TEST <-mapUniProt(
-#   from="UniProtKB_AC-ID",
-#   to="UniProtKB-Swiss-Prot",
-#   query=MergeTide_ToMap[1:length(MergeTide_ToMap)],
-#   columns=c("accession","sequence","id","cc_subcellular_location","go_id")
-# )
 
 Sequences_to_tile_raw <-queryUniProt(
   query=ndr_goterms,
