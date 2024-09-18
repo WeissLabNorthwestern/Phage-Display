@@ -9,7 +9,10 @@ library(UniProt.ws)
 # Requires for input (see variables below).
 #   1. Codon table as a csv; correlate amino acid with codon. E.coli version (IE, for M13 phage display) is included in codon_tables folder.
 #   2. TSV of aiupred-scored human proteome; each amino acid is replaced with a number from 0 (ordered) to 9 (disordered). Human proteome is included in human_proteome folder.
-# Since our phage vector contains a HindIII site to remove background, removal of this site is important for 
+# Since our phage vector contains a HindIII site to remove background, removal of this site is important for reducing background by digesting unligated vector.
+# This program outputs two files:
+#   1. a tsv of tiled protein sequences with specificed tile lengths.
+#   2. a tsv of tiled DNA sequences codon-optimized based on the codon table below (default is E_Coli) with the indicated restriction site removed.
 
 # Codon table for reverse translation.
 codon_table<-read.csv('YOUR_WORKING_DIRECTORY_HERE/codon_tables/e_coli.csv')
@@ -38,10 +41,10 @@ rsite_replace2='AAGCCT'
 
 # GOTERMS TO USE
 ndr_goterms=c(
-   "(GO:0000910 OR GO:0035329 OR GO:0003924 ) AND organism_id:9606" # Example
+   "(GO:0000910 OR GO:0035329 OR GO:0003924 ) AND organism_id:9606" # Example GOTerms
 )
 ###########################################################################################################3
-#AAGCCT
+
 
 aipred <- as.data.frame(aipred_raw[!aipred_raw$V1=="",]$V1)
 aipred$seqscore <-aipred_raw[!aipred_raw$V1==""|!aipred_raw$V2=="",]$V2
