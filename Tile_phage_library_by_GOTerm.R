@@ -24,13 +24,13 @@ aipred_raw<-read.csv('YOUR_WORKING_DIRECTORY_HERE/human_proteome/hprot_aiupred.t
 setwd('YOUR_WORKING_DIRECTORY_HERE')
 
 # Tile length in aa
-tile_size=24 #Sample
+tile_size=24 #Example
 
 #Tile overlap in aa
-tile_overlap=12 #Sample
+tile_overlap=12 #Example
 
 # AIupredcutoff
-aiupred_cutoff=0.4
+aiupred_cutoff=0.4   #Example
 
 # Restriction site to remove
 rsite_to_remove='AAGCTT' #HindIII for now
